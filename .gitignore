@@ -1,0 +1,10 @@
+# Banco de dados local
+data/kart.db
+
+# Arquivos temporários do Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Configurações locais
+.env

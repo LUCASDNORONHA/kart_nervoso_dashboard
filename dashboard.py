@@ -36,7 +36,7 @@ st.header("🏆 Ranking Histórico")
 
 ranking_query = """
 SELECT p.nome AS Piloto,
-       p.equipe AS Equipe,
+       p.falta AS Falta,
        SUM(r.pontos) AS Pontos, 
        MIN(r.posicao) AS Melhor_Posicao, 
        MIN(r.melhor_volta) AS Melhor_Volta

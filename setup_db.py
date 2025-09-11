@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS pilotos (
     piloto_id INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT NOT NULL,
     nickname TEXT,
-    equipe TEXT
+    falta TEXT
 );
 """)
 

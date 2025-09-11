@@ -98,7 +98,7 @@ st.table(corridas_df)
 # -----------------------------
 # Gráfico de Evolução de Pontos
 # -----------------------------
-st.header("📈 Evolução de Pontos por Piloto ao longo do tempo")
+st.header("📈 Evolução do Piloto")
 evolucao_query = """
 SELECT c.data AS Data, p.nome AS Piloto, p.equipe AS Equipe,
        SUM(r.pontos) OVER(PARTITION BY r.piloto_id ORDER BY c.data) AS Pontos_Acumulados

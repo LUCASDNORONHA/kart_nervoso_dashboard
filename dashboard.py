@@ -16,7 +16,7 @@ st.set_page_config(page_title="Placar de Líderes Kart Nervoso", layout="wide")
 # Logo + Título
 col1, col2 = st.columns([1,5])
 col1.image("assets/logo_kart_nervoso.png", width=120)
-col2.markdown("<h1 style='color:white;'>🏁 Kart Nervoso Leaderboard</h1>", unsafe_allow_html=True)
+col2.markdown("<h1 style='color:white;'>🏁 Kart Nervoso</h1>", unsafe_allow_html=True)
 
 # Custom CSS para tabela e fundo escuro
 st.markdown("""

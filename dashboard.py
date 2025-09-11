@@ -11,7 +11,7 @@ conn = sqlite3.connect("data/kart.db")
 # -----------------------------
 # Configuração do Streamlit
 # -----------------------------
-st.set_page_config(page_title="Kart Nervoso Leaderboard", layout="wide")
+st.set_page_config(page_title="Placar de Líderes Kart Nervoso", layout="wide")
 
 # Logo + Título
 col1, col2 = st.columns([1,5])
@@ -32,11 +32,10 @@ st.markdown("""
 # -----------------------------
 # Ranking Histórico Geral
 # -----------------------------
-st.header("🏆 Ranking Histórico Geral")
+st.header("🏆 Ranking Histórico")
 
 ranking_query = """
-SELECT p.nome AS Piloto, 
-       p.equipe AS Equipe,
+SELECT p.nome AS Piloto,
        SUM(r.pontos) AS Pontos, 
        MIN(r.posicao) AS Melhor_Posicao, 
        MIN(r.melhor_volta) AS Melhor_Volta
@@ -98,7 +97,7 @@ st.table(corridas_df)
 # -----------------------------
 # Gráfico de Evolução de Pontos
 # -----------------------------
-st.header("📈 Evolução de Pontos por Piloto")
+st.header("📈 Evolução de Pontos por Piloto ao longo do tempo")
 evolucao_query = """
 SELECT c.data AS Data, p.nome AS Piloto, p.equipe AS Equipe,
        SUM(r.pontos) OVER(PARTITION BY r.piloto_id ORDER BY c.data) AS Pontos_Acumulados

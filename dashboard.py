@@ -96,33 +96,6 @@ corridas_df = pd.read_sql_query(corridas_query, conn)
 st.table(corridas_df)
 
 # -----------------------------
-# Gráfico de Evolução de Pontos
-# -----------------------------
-st.header("📈 Evolução do Piloto")
-evolucao_query = """
-SELECT c.data AS Data, p.nome AS Piloto, p.equipe AS Equipe,
-       SUM(r.pontos) OVER(PARTITION BY r.piloto_id ORDER BY c.data) AS Pontos_Acumulados
-FROM resultados r
-JOIN pilotos p ON r.piloto_id = p.piloto_id
-JOIN corridas c ON r.corrida_id = c.corrida_id
-ORDER BY c.data
-"""
-evolucao_df = pd.read_sql_query(evolucao_query, conn)
-
-fig = px.line(
-    evolucao_df,
-    x="Data", y="Pontos_Acumulados", color="Piloto",
-    markers=True,
-    color_discrete_sequence=px.colors.qualitative.Bold,
-    hover_data={'Equipe': True, 'Pontos_Acumulados': True}
-)
-fig.update_layout(
-    plot_bgcolor='#1e1e2f', paper_bgcolor='#1e1e2f',
-    font_color='white', legend_title_text='Piloto'
-)
-st.plotly_chart(fig, use_container_width=True)
-
-# -----------------------------
 # Melhores Voltas
 # -----------------------------
 st.header("⏱️ Melhor Volta por Piloto")

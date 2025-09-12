@@ -31,7 +31,7 @@ resultados = [
     ("Daniel Francisco", 15, 16, "00:53.374"),
     ("Aldenir Nunes", 4, 12, "00:55.225"),
     ("Nicolas Alves", 5, 10, "00:56.595"),
-    ("Lucas Dias Noronha", 8, 15, "00:57.063"),
+    ("Lucas Dias Noronha", 6, 8, "00:57.063"),
     ("Rick Lira", 7, 6, "00:56.012")
 ]
 

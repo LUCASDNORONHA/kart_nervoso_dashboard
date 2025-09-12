@@ -9,15 +9,15 @@ cursor.execute("""
 CREATE TABLE IF NOT EXISTS pilotos (
     piloto_id INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT NOT NULL,
-    nickname TEXT,
-    falta TEXT
+    falta TEXT NOT NULL,
+    presença TEXT NOT NULL
 );
 """)
 
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS corridas (
     corrida_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    pista TEXT NOT NULL,
+    local TEXT NOT NULL,
     data DATE NOT NULL,
     status TEXT CHECK(status IN ('planejada', 'concluída')) NOT NULL
 );

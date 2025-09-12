@@ -32,7 +32,7 @@ resultados = [
     ("Aldenir Nunes", 4, 12, "00:55.225"),
     ("Nicolas Alves", 5, 10, "00:56.595"),
     ("Lucas Dias Noronha", 8, 15, "00:57.063"),
-    ("Rick Lira", 7, 2, "00:56.012")
+    ("Rick Lira", 7, 6, "00:56.012")
 ]
 
 # Função para inserir piloto se não existir

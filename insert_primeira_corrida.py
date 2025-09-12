@@ -26,13 +26,13 @@ else:
 
 # --- Pilotos e resultados ---
 resultados = [
-    ("David Maion", 1, 17, "00:52.321"),
-    ("Marcos Silva", 2, 17, "00:53.732"),
-    ("Daniel Francisco", 3, 16, "00:53.374"),
-    ("Aldenir Nunes", 4, 16, "00:55.225"),
-    ("Nicolas Alves", 5, 15, "00:56.595"),
-    ("Lucas Dias Noronha", 6, 15, "00:57.063"),
-    ("Rick Lira", 7, 14, "00:56.012")
+    ("David Maion", 1, 25, "00:52.321"),
+    ("Marcos Silva", 2, 18, "00:53.732"),
+    ("Daniel Francisco", 15, 16, "00:53.374"),
+    ("Aldenir Nunes", 4, 12, "00:55.225"),
+    ("Nicolas Alves", 5, 10, "00:56.595"),
+    ("Lucas Dias Noronha", 8, 15, "00:57.063"),
+    ("Rick Lira", 7, 2, "00:56.012")
 ]
 
 # Função para inserir piloto se não existir

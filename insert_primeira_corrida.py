@@ -10,29 +10,29 @@ conn = sqlite3.connect("data/kart.db")
 cursor = conn.cursor()
 
 # --- Corrida ---
-pista = "Brasília - Primeira Corrida"
-data_corrida = "2025-09-09"
+local = "Kart Point"
+data_corrida = "2025-09-07"
 status = "concluída"
 
 # Verifica se a corrida já existe
-cursor.execute("SELECT corrida_id FROM corridas WHERE pista = ? AND data = ?", (pista, data_corrida))
+cursor.execute("SELECT corrida_id FROM corridas WHERE pista = ? AND data = ?", (local, data_corrida))
 res = cursor.fetchone()
 if res:
     corrida_id = res[0]
 else:
-    cursor.execute("INSERT INTO corridas (pista, data, status) VALUES (?, ?, ?)", 
-                   (pista, data_corrida, status))
+    cursor.execute("INSERT INTO corridas (local, data, status) VALUES (?, ?, ?)", 
+                   (local, data_corrida, status))
     corrida_id = cursor.lastrowid
 
 # --- Pilotos e resultados ---
 resultados = [
-    ("David Maion", 2, 17, "00:52.321"),
-    ("Marcos Silva", 3, 17, "00:53.732"),
-    ("Daniel Francisco", 9, 16, "00:53.374"),
-    ("Aldenir Nunes", 10, 16, "00:55.225"),
-    ("Nicolas Alves", 11, 15, "00:56.595"),
-    ("Lucas Dias Noronha", 12, 15, "00:57.063"),
-    ("Rick Lira", 13, 14, "00:56.012")
+    ("David Maion", 1, 17, "00:52.321"),
+    ("Marcos Silva", 2, 17, "00:53.732"),
+    ("Daniel Francisco", 3, 16, "00:53.374"),
+    ("Aldenir Nunes", 4, 16, "00:55.225"),
+    ("Nicolas Alves", 5, 15, "00:56.595"),
+    ("Lucas Dias Noronha", 6, 15, "00:57.063"),
+    ("Rick Lira", 7, 14, "00:56.012")
 ]
 
 # Função para inserir piloto se não existir

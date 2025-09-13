@@ -1,115 +1,157 @@
 import sqlite3
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 
 # -----------------------------
-# Conexão com o banco SQLite
+# Conexão com o banco
 # -----------------------------
 conn = sqlite3.connect("data/kart.db")
 
 # -----------------------------
-# Configuração do Streamlit
+# Configuração Streamlit
 # -----------------------------
-st.set_page_config(page_title="Placar de Líderes Kart Nervoso", layout="wide")
+st.set_page_config(page_title="Kart Nervoso - Dashboard", layout="wide")
 
-# Logo + Título
-col1, col2 = st.columns([1,5])
-col1.image("assets/logo_kart_nervoso.png", width=120)
-col2.markdown("<h1 style='color:white;'>🏁 Kart Nervoso</h1>", unsafe_allow_html=True)
-
-# Custom CSS para tabela e fundo escuro
+# -----------------------------
+# Logo grande centralizado + título
+# -----------------------------
 st.markdown("""
-    <style>
-    .main {background-color: #1e1e2f; color: white;}
-    .stDataFrame tbody tr th {color: white;}
-    .stDataFrame tbody tr td {color: white;}
-    .leaderboard th {background-color: #333; color: white; text-align:center;}
-    .leaderboard td {text-align:center;}
-    </style>
+<div style="text-align:center; margin-bottom:20px;">
+    <h1 style="color:#d62828; margin-top:10px;">Kart Nervoso</h1>
+</div>
 """, unsafe_allow_html=True)
 
 # -----------------------------
-# Ranking Histórico Geral
+# CSS customizado - tema esportivo claro
 # -----------------------------
-st.header("🏆 Ranking Histórico")
+st.markdown("""
+<style>
+body {background-color: #f5f5f5; color: #111; font-family: 'Roboto', sans-serif;}
+h1, h2, h3 {font-family: 'Orbitron', sans-serif; color: #d62828; text-shadow: 1px 1px 2px #aaa;}
 
+/* Tabelas */
+table {border-collapse: collapse; width: 100%; margin-bottom: 20px;}
+th, td {padding: 10px; text-align: center; border: 1px solid #ccc; color:#111;}
+thead th {background-color: #d62828; color: white; font-weight: bold;}
+tbody tr:nth-child(odd) {background-color: #fff;}
+tbody tr:nth-child(even) {background-color: #f2f2f2;}
+tbody tr:hover {background-color: #ffe5e5; transition: 0.3s;}
+
+/* Pódio */
+.pos-1 {background-color: gold; font-weight:bold;}
+.pos-2 {background-color: silver; font-weight:bold;}
+.pos-3 {background-color: #cd7f32; font-weight:bold;}
+
+/* Barras de pontos */
+.bar-container {background-color: #eee; width: 100%; height: 12px; border-radius: 5px;}
+.bar-fill {background-color: #d62828; height: 12px; border-radius: 5px;}
+
+/* Cards de corrida */
+.card {background-color: #fff0f0; padding: 15px; margin: 10px auto; border-radius: 10px; box-shadow: 2px 2px 8px #ccc; width: 250px;}
+.card h4 {margin: 0; font-weight: bold; color:#d62828; text-align:center;}
+.card p {margin: 2px 0; color:#555; text-align:center; font-size:14px;}
+</style>
+""", unsafe_allow_html=True)
+
+# -----------------------------
+# Função para exibir tabela HTML com barras de pontos
+# -----------------------------
+def mostrar_tabela_html(df, mostrar_barras=True):
+    html = "<table><thead><tr>"
+    cols = df.columns.tolist()
+    if 'Posição' in cols:
+        cols.remove('Posição')
+        cols = ['Posição', 'Piloto'] + [c for c in cols if c not in ['Posição','Piloto']]
+    for col in cols:
+        html += f"<th>{col}</th>"
+    html += "</tr></thead><tbody>"
+    
+    max_pontos = df['Pontos'].max() if mostrar_barras and 'Pontos' in df.columns else 0
+    
+    for _, row in df.iterrows():
+        classe = f"pos-{row['Posição']}" if row['Posição'] <= 3 else ""
+        html += f"<tr class='{classe}'>"
+        for col in cols:
+            valor = row[col]
+            if col == "Pontos" and mostrar_barras:
+                fill_percent = int((valor / max_pontos) * 100)
+                valor = f"""
+                {valor} 
+                <div class='bar-container'>
+                    <div class='bar-fill' style='width:{fill_percent}%;'></div>
+                </div>
+                """
+            if col == "Melhor_Volta":
+                valor = f"<strong style='color:#d62828;'>{valor}</strong>"
+            html += f"<td>{valor}</td>"
+        html += "</tr>"
+    html += "</tbody></table>"
+    st.markdown(html, unsafe_allow_html=True)
+
+# -----------------------------
+# 1️⃣ Ranking Histórico Geral
+# -----------------------------
+st.header("Ranking Histórico Geral")
 ranking_query = """
 SELECT p.nome AS Piloto,
-       p.equipe AS Equipe,
-       SUM(r.pontos) AS Pontos, 
-       MIN(r.posicao) AS Melhor_Posicao, 
-       MIN(r.melhor_volta) AS Melhor_Volta
+       SUM(r.pontos) AS Pontos,
+       MIN(r.melhor_volta) AS Melhor_Volta,
+       RANK() OVER(ORDER BY SUM(r.pontos) DESC, MIN(r.melhor_volta)) AS Posição
 FROM resultados r
 JOIN pilotos p ON r.piloto_id = p.piloto_id
 GROUP BY p.piloto_id
-ORDER BY Pontos DESC, Melhor_Volta ASC
 """
 ranking_df = pd.read_sql_query(ranking_query, conn)
-
-# Formatar melhor volta
 ranking_df['Melhor_Volta'] = ranking_df['Melhor_Volta'].apply(lambda x: f"{int(x//60):02d}:{x%60:06.3f}")
-ranking_df['Piloto'] = ranking_df['Piloto'].apply(lambda x: f"🏎️ {x}")
-
-# Função para destacar líder
-def highlight_leader(row):
-    return ['background-color: gold; color:black;' if row.name == 0 else '' for _ in row]
-
-# Mostrar tabela
-st.dataframe(
-    ranking_df.style.apply(highlight_leader, axis=1).set_properties(**{'text-align': 'center'}),
-    use_container_width=True
-)
+mostrar_tabela_html(ranking_df)
 
 # -----------------------------
-# Filtro por piloto ou equipe
+# 2️⃣ Ranking por Corrida
 # -----------------------------
-st.header("🔎 Filtrar Ranking")
-pilotos = ranking_df['Piloto'].tolist()
-equipes = ranking_df['Equipe'].unique().tolist()
+st.header("Ranking por Corrida")
+corridas_df = pd.read_sql_query("SELECT corrida_id, pista, data_corrida FROM corridas ORDER BY data_corrida", conn)
+corrida_labels = [f"{row['data_corrida']} - {row['pista']}" for _, row in corridas_df.iterrows()]
 
-selected_piloto = st.selectbox("Escolha um piloto (opcional):", ["Todos"] + pilotos)
-selected_equipe = st.selectbox("Escolha uma equipe (opcional):", ["Todas"] + equipes)
+selected_label = st.selectbox("Escolha uma corrida:", corrida_labels)
+corrida_id = corridas_df[corridas_df.apply(lambda row: f"{row['data_corrida']} - {row['pista']}", axis=1) == selected_label]["corrida_id"].values[0]
 
-filtered_df = ranking_df.copy()
-if selected_piloto != "Todos":
-    filtered_df = filtered_df[filtered_df['Piloto'] == selected_piloto]
-if selected_equipe != "Todas":
-    filtered_df = filtered_df[filtered_df['Equipe'] == selected_equipe]
-
-st.dataframe(
-    filtered_df.style.apply(highlight_leader, axis=1).set_properties(**{'text-align': 'center'}),
-    use_container_width=True
-)
-
-# -----------------------------
-# Próximas Corridas
-# -----------------------------
-st.header("📅 Próximas Corridas")
-corridas_query = """
-SELECT pista AS Pista, data AS Data, status AS Status
-FROM corridas
-WHERE status='planejada'
-ORDER BY data
+query_corrida = """
+SELECT r.posicao AS Posição, p.nome AS Piloto, r.pontos AS Pontos, r.melhor_volta AS Melhor_Volta
+FROM resultados r
+JOIN pilotos p ON r.piloto_id = p.piloto_id
+WHERE r.corrida_id = ?
+ORDER BY r.posicao ASC
 """
-corridas_df = pd.read_sql_query(corridas_query, conn)
-st.table(corridas_df)
+corrida_df = pd.read_sql_query(query_corrida, conn, params=(corrida_id,))
+corrida_df['Melhor_Volta'] = corrida_df['Melhor_Volta'].apply(lambda x: f"{int(x//60):02d}:{x%60:06.3f}")
+mostrar_tabela_html(corrida_df)
 
 # -----------------------------
-# Melhores Voltas
+# 3️⃣ Melhor Volta por Piloto
 # -----------------------------
-st.header("⏱️ Melhor Volta por Piloto")
+st.header("Melhor Volta por Piloto")
 melhor_volta_query = """
-SELECT p.nome AS Piloto, p.equipe AS Equipe, MIN(r.melhor_volta) AS Melhor_Volta
+SELECT p.nome AS Piloto, MIN(r.melhor_volta) AS Melhor_Volta,
+       RANK() OVER(ORDER BY MIN(r.melhor_volta)) AS Posição
 FROM resultados r
 JOIN pilotos p ON r.piloto_id = p.piloto_id
 GROUP BY p.piloto_id
-ORDER BY Melhor_Volta ASC
 """
 melhor_volta_df = pd.read_sql_query(melhor_volta_query, conn)
 melhor_volta_df['Melhor_Volta'] = melhor_volta_df['Melhor_Volta'].apply(lambda x: f"{int(x//60):02d}:{x%60:06.3f}")
-melhor_volta_df['Piloto'] = melhor_volta_df['Piloto'].apply(lambda x: f"🏎️ {x}")
-st.table(melhor_volta_df)
+mostrar_tabela_html(melhor_volta_df, mostrar_barras=False)
+
+# -----------------------------
+# Cards das Corridas
+# -----------------------------
+st.header("Eventos")
+for _, row in corridas_df.iterrows():
+    st.markdown(f"""
+    <div class='card'>
+        <h4>{row['pista']}</h4>
+        <p>Data: {row['data_corrida']}</p>
+    </div>
+    """, unsafe_allow_html=True)
 
 # -----------------------------
 # Fechar conexão

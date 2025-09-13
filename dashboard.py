@@ -22,6 +22,21 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -----------------------------
+# Card de descrição do grupo
+# -----------------------------
+st.markdown(f"""
+<div class='card' style='background-color:#ffe5e5; max-width:800px; margin-left:auto; margin-right:auto;'>
+    <h4 style='text-align:center;'>Sobre o Kart Nervoso</h4>
+    <p style='text-align:center; font-size:16px; line-height:1.5; color:#111;'>
+        O Kart Nervoso é um grupo apaixonado por velocidade, adrenalina e competição saudável.<br>
+        Nosso objetivo é reunir pilotos talentosos e proporcionar corridas emocionantes, 
+        com espírito esportivo e muita diversão.<br>
+        Aqui você encontra rankings, melhores voltas, histórico de corridas e eventos especiais do grupo.
+    </p>
+</div>
+""", unsafe_allow_html=True)
+
+# -----------------------------
 # CSS customizado - tema esportivo claro
 # -----------------------------
 st.markdown("""

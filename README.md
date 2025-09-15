@@ -26,17 +26,12 @@ Este projeto foi construído utilizando as seguintes tecnologias:
 ---
 
 ## 📂 Estrutura do Projeto
-
+```
 kart_nervoso_dashboard/
-
 ├─ dashboard.py       # Ponto de entrada do painel interativo
-
 ├─ insert_data.py     # Script para adicionar dados ao banco
-
 ├─ ranking.py         # Módulo para cálculo e exibição do ranking
-
 ├─ setup_db.py        # Script de configuração inicial do banco de dados
-
 ├─ requirements.txt   # Lista de dependências do projeto
-
 └─ README.md          # Documentação do projeto
+```

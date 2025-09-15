@@ -2,6 +2,9 @@
 
 Um painel interativo e completo para o grupo **Kart Nervoso**. Visualize rankings, estatísticas e acompanhe o desempenho dos pilotos em detalhes.
 
+Link: link: https://kartnervosodashboard-auw9gtvhrpb9jqzbdve4rc.streamlit.app/
+
+
 ---
 ## ⚡ Funcionalidades
 
